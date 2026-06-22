@@ -50,10 +50,12 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+import time as _time
 import config
 from news_filter_live import is_symbol_blocked
 
 _fired_swings: dict[str, tuple] = {}
+_pending_sw4:  dict[str, tuple] = {}   # symbol → (direction, timestamp)
 
 SW4_NEAR_EXTREME_PIPS = 50
 SW4_MIN_CONFIDENCE    = 80
@@ -61,6 +63,17 @@ SW4_MIN_RR            = 4.0
 SW4_SL_BUFFER_PIPS    = 15
 SW4_TP_PRIMARY_FIB    = 0.382
 SW4_TP_EXTENSION_FIB  = 0.618
+SW4_CORR_EXPIRY_SECS  = 600   # correlated-pair signal stays valid for 10 minutes
+
+# Correlated-pair map: symbol → (correlated symbol, expected direction of that pair)
+# Logic: USDJPY SELL + EURUSD BUY = both signal USD weakening (macro confirmation)
+#        EURUSD BUY + USDJPY SELL = same theme, viewed from the other side
+_CORR_MAP: dict[str, tuple[str, str]] = {
+    "USD/JPY": ("EUR/USD", "bullish"),   # USDJPY SELL → expect EURUSD BUY
+    "EUR/USD": ("USD/JPY", "bearish"),   # EURUSD BUY  → expect USDJPY SELL
+    "GBP/USD": ("USD/JPY", "bearish"),   # GBPUSD BUY  → expect USDJPY SELL
+    "AUD/USD": ("USD/JPY", "bearish"),   # AUDUSD BUY  → expect USDJPY SELL
+}
 
 
 def _recent_signal(events: list, direction: str, max_bars: int = 8) -> bool:
@@ -222,6 +235,26 @@ def check(state: dict, debug: bool = False) -> dict | None:
         score += 10
         reasons.append("London/NY session")
 
+    # ── Correlated-pair confirmation bonus ────────────────────────────────────
+    # If a paired symbol already fired a SW4 in the opposite USD direction
+    # within the last 10 minutes, the macro theme is confirmed from both sides.
+    corr = _CORR_MAP.get(symbol)
+    if corr:
+        corr_symbol, corr_dir = corr
+        corr_entry = _pending_sw4.get(corr_symbol)
+        if (
+            corr_entry
+            and corr_entry[0] == corr_dir
+            and (_time.time() - corr_entry[1]) < SW4_CORR_EXPIRY_SECS
+        ):
+            score += 10
+            reasons.append(
+                f"{corr_symbol} SW4 {'BUY' if corr_dir == 'bullish' else 'SELL'} "
+                f"confirms macro USD theme (+10)"
+            )
+            if debug:
+                print(f"  [SW4] {symbol}: correlated pair {corr_symbol} confirms → +10")
+
     if debug:
         print(
             f"  [SW4] {symbol}: score={score} dir={trade_type} "
@@ -319,6 +352,7 @@ def check(state: dict, debug: bool = False) -> dict | None:
             print(f"  [SW4] {symbol}: R:R {rr:.2f} < SW4_MIN_RR {SW4_MIN_RR} — skip")
         return None
 
+    _pending_sw4[symbol]  = (direction, _time.time())
     _fired_swings[symbol] = swing_key
 
     macro_pips = round(macro_range / pip)

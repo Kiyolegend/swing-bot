@@ -64,7 +64,7 @@ SL_BUFFER_PIPS = 12
 
 # ── Confidence & trade limits ─────────────────────────────────────────────────
 MIN_CONFIDENCE      = 75   # swing setups are rarer — accept slightly lower bar
-MAX_TRADES_PER_DAY  = 1    # one high-quality swing per session maximum
+MAX_TRADES_PER_DAY  = 5   # one high-quality swing per session maximum
 MAX_CONSECUTIVE_LOSSES = 2
 
 # ── Engine scan interval ──────────────────────────────────────────────────────

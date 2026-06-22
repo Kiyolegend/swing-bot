@@ -7,5 +7,5 @@ STRATEGIES: list[tuple[str, callable]] = [
     ("SW1 D1 Fib Reversal",          swing1),
     ("SW2 D1 Pullback",              swing2),
     ("SW3 Zone Bounce Continuation", swing3),
-    ("SW4 D1 Trend Continuation",    swing4),
+    ("SW4 Macro Exhaustion Reversal", swing4),
 ]
