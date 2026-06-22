@@ -34,6 +34,7 @@ Scoring (max 100):
 
 import config
 from news_filter_live import is_symbol_blocked 
+_fired_swings: dict[str, tuple] = {}
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
@@ -238,6 +239,13 @@ def check(state: dict, debug: bool = False) -> dict | None:
         if debug:
             print(f"  [SW1] {symbol}: R:R {rr:.2f} < MIN_RR {config.MIN_RR} — skip")
         return None
+        # ── Duplicate guard ───────────────────────────────────────────────────────
+    swing_key = (round(swing_hi, 5), round(swing_lo, 5))
+    if _fired_swings.get(symbol) == swing_key:
+        if debug:
+            print(f"  [SW1] {symbol}: already fired on this D1 swing — skip")
+        return None
+    _fired_swings[symbol] = swing_key
 
     return {
         "trade":      True,
