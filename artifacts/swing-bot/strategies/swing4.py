@@ -245,7 +245,7 @@ def check(state: dict, debug: bool = False) -> dict | None:
         if (
             corr_entry
             and corr_entry[0] == corr_dir
-            and (_time.time() - corr_entry[1]) < SW4_CORR_EXPIRY_SECS
+            and ((state.get("reference_ts") or _time.time()) - corr_entry[1]) < SW4_CORR_EXPIRY_SECS
         ):
             score += 10
             reasons.append(
@@ -352,7 +352,7 @@ def check(state: dict, debug: bool = False) -> dict | None:
             print(f"  [SW4] {symbol}: R:R {rr:.2f} < SW4_MIN_RR {SW4_MIN_RR} — skip")
         return None
 
-    _pending_sw4[symbol]  = (direction, _time.time())
+    _pending_sw4[symbol]  = (direction, state.get("reference_ts") or _time.time())
     _fired_swings[symbol] = swing_key
 
     macro_pips = round(macro_range / pip)
