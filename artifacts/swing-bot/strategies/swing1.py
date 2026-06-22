@@ -258,6 +258,7 @@ def check(state: dict, debug: bool = False) -> dict | None:
         if debug:
             print(f"  [SW1] {symbol}: R:R {rr:.2f} < MIN_RR {config.MIN_RR} — skip")
         return None
+    _fired_swings[symbol] = swing_key  
     return {
         "trade":      True,
         "type":       trade_type,
