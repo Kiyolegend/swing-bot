@@ -33,6 +33,7 @@ Scoring (max 100):
 """
 
 import config
+from news_filter_live import is_symbol_blocked 
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
@@ -81,6 +82,13 @@ def check(state: dict, debug: bool = False) -> dict | None:
     pip     = config.get_symbol_cfg(symbol)["pip_size"]
 
     if not price or price <= 0:
+        return None
+    
+        # ── News filter ───────────────────────────────────────────────────────────
+    news_blocked, news_reason = is_symbol_blocked(symbol, reference_ts=state.get("reference_ts"))
+    if news_blocked:
+        if debug:
+            print(f"  [SW1] {symbol}: news block — {news_reason}")
         return None
 
     # ── Step 1: D1 swing levels ────────────────────────────────────────────────

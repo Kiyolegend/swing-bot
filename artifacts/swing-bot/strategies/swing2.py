@@ -34,6 +34,7 @@ Scoring (max 100):
 """
 
 import config
+from news_filter_live import is_symbol_blocked 
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
@@ -80,6 +81,13 @@ def check(state: dict, debug: bool = False) -> dict | None:
     if bias_d1 not in ("bullish", "bearish"):
         if debug:
             print(f"  [SW2] {symbol}: D1 bias neutral — skip")
+        return None
+    
+        # ── News filter ───────────────────────────────────────────────────────────
+    news_blocked, news_reason = is_symbol_blocked(symbol, reference_ts=state.get("reference_ts"))
+    if news_blocked:
+        if debug:
+            print(f"  [SW2] {symbol}: news block — {news_reason}")
         return None
 
     # ── Step 1: Correction direction ───────────────────────────────────────────

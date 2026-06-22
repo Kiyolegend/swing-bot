@@ -14,6 +14,7 @@ the zone is close and the target is the full D1 swing extreme.
 """
 
 import config
+from news_filter_live import is_symbol_blocked
 
 
 def _recent_signal(events: list, direction: str, max_bars: int) -> bool:
@@ -41,6 +42,13 @@ def check(state: dict, debug: bool = False) -> dict | None:
     if bias_d1 not in ("bullish", "bearish"):
         if debug:
             print(f"  [SW3] {symbol}: D1 neutral — skip")
+        return None
+    
+        # ── News filter ───────────────────────────────────────────────────────────
+    news_blocked, news_reason = is_symbol_blocked(symbol, reference_ts=state.get("reference_ts"))
+    if news_blocked:
+        if debug:
+            print(f"  [SW3] {symbol}: news block — {news_reason}")
         return None
 
     # ── Step 1: D1 swing and zone ─────────────────────────────────────────────

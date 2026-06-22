@@ -110,6 +110,7 @@ def sanitize_state(state: dict) -> dict | None:
             "sr_levels": tf_data.get("sr_levels")  or [],
             "swing_hi":  tf_data.get("swing_hi"),
             "swing_lo":  tf_data.get("swing_lo"),
+            "zone_visited": tf_data.get("zone_visited", False),
         }
 
     if "sr_levels" not in state:
