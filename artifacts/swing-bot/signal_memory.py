@@ -59,8 +59,8 @@ class SignalMemory:
             pass
 
     def _make_key(self, decision: dict) -> tuple:
-        swing_hi = decision.get("swing_hi", 0)
-        swing_lo = decision.get("swing_lo", 0)
+        swing_hi = decision.get("swing_hi") or 0
+        swing_lo = decision.get("swing_lo") or 0
         return (
             decision.get("symbol", ""),
             decision.get("strategy", ""),

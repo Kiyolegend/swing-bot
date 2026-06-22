@@ -1,1 +1,9 @@
-{}
+{
+  "target_rr": 4.0,
+  "default_lot": 0.01,
+  "min_sl_pips": 25,
+  "sl_buffer_pips": 12,
+  "net_min_rr": 2.5,
+  "min_confidence": 75,
+  "max_trades_per_day": 1
+}

@@ -135,6 +135,10 @@ def check(state: dict, debug: bool = False) -> dict | None:
         direction  = bias_d1 if bias_d1 in ("bullish", "bearish") else "bullish"
         mode_label = "continuation"
     else:
+        if bias_d1 == "bearish":
+            if debug:
+                print(f"  [SW1] {symbol}: below zone in bearish D1 — extension mode skipped")
+            return None
         direction  = "bullish"
         mode_label = "extension reversal"
 
