@@ -181,11 +181,6 @@ def check(state: dict, debug: bool = False) -> dict | None:
     tp = tp_primary if rr_primary >= config.MIN_RR else tp_stretch
     rr = round(abs(tp - entry) / sl_dist, 2)
 
-    if rr < config.MIN_RR:
-        if debug:
-            print(f"  [SW3] {symbol}: R:R {rr:.2f} < MIN_RR {config.MIN_RR} — skip")
-        return None
-    
         # ── Duplicate guard ───────────────────────────────────────────────────────
     swing_key = (round(swing_hi, 5), round(swing_lo, 5))
     if _fired_swings.get(symbol) == swing_key:
@@ -193,6 +188,11 @@ def check(state: dict, debug: bool = False) -> dict | None:
             print(f"  [SW3] {symbol}: already fired on this D1 swing — skip")
         return None
     _fired_swings[symbol] = swing_key
+
+    if rr < config.MIN_RR:
+        if debug:
+            print(f"  [SW3] {symbol}: R:R {rr:.2f} < MIN_RR {config.MIN_RR} — skip")
+        return None
 
     return {
         "trade":      True,

@@ -235,10 +235,6 @@ def check(state: dict, debug: bool = False) -> dict | None:
     tp_dist = abs(tp - entry)
     rr      = round(tp_dist / sl_dist, 2) if sl_dist > 0 else 0
 
-    if rr < config.MIN_RR:
-        if debug:
-            print(f"  [SW1] {symbol}: R:R {rr:.2f} < MIN_RR {config.MIN_RR} — skip")
-        return None
         # ── Duplicate guard ───────────────────────────────────────────────────────
     swing_key = (round(swing_hi, 5), round(swing_lo, 5))
     if _fired_swings.get(symbol) == swing_key:
@@ -247,6 +243,10 @@ def check(state: dict, debug: bool = False) -> dict | None:
         return None
     _fired_swings[symbol] = swing_key
 
+    if rr < config.MIN_RR:
+        if debug:
+            print(f"  [SW1] {symbol}: R:R {rr:.2f} < MIN_RR {config.MIN_RR} — skip")
+        return None
     return {
         "trade":      True,
         "type":       trade_type,
