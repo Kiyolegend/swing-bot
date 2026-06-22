@@ -252,7 +252,7 @@ def check(state: dict, debug: bool = False) -> dict | None:
         if debug:
             print(f"  [SW1] {symbol}: already fired on this D1 swing — skip")
         return None
-    _fired_swings[symbol] = swing_key
+    
 
     if rr < config.MIN_RR:
         if debug:
