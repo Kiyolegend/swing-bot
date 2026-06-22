@@ -1,9 +1,11 @@
 from .swing1 import check as swing1
 from .swing2 import check as swing2
 from .swing3 import check as swing3
+from .swing4 import check as swing4
 
 STRATEGIES: list[tuple[str, callable]] = [
     ("SW1 D1 Fib Reversal",          swing1),
     ("SW2 D1 Pullback",              swing2),
     ("SW3 Zone Bounce Continuation", swing3),
+    ("SW4 D1 Trend Continuation",    swing4),
 ]

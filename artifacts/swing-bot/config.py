@@ -111,3 +111,11 @@ def fib_extension_tp(state: dict, direction: str, entry: float) -> float | None:
         return round(tp, 5)
     except Exception:
         return None
+    
+
+SW4_NEAR_EXTREME_PIPS  = 50
+SW4_MIN_CONFIDENCE     = 80
+SW4_MIN_RR             = 4.0
+SW4_SL_BUFFER_PIPS     = 15
+SW4_TP_PRIMARY_FIB     = 0.382
+SW4_TP_EXTENSION_FIB   = 0.618
