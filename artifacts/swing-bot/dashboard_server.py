@@ -262,7 +262,6 @@ def _reset_daily_stats_if_needed():
             session_stats["trades_today"]       = 0
             session_stats["consecutive_losses"] = 0
             session_stats["last_reset_date"]    = today
-            signal_memory.clear()
             _save_session_stats()
 
 
@@ -735,7 +734,9 @@ def api_set_mode(mode):
         return jsonify({"ok": True, "mode": "LIVE"})
     return jsonify({"ok": False, "error": "Unknown mode"}), 400
 
-
+@app.route("/api/symbols")
+def api_symbols():
+    return jsonify({"symbols": config.SCAN_SYMBOLS})
 @app.route("/api/symbols/toggle", methods=["POST"])
 def api_toggle_symbol():
     data    = request.get_json(force=True, silent=True) or {}

@@ -59,15 +59,15 @@ class SignalMemory:
             pass
 
     def _make_key(self, decision: dict) -> tuple:
-        entry = decision.get("entry", 0)
-        entry_bucket = round(entry, 1) if entry > 50 else round(entry, 3)
+        swing_hi = decision.get("swing_hi", 0)
+        swing_lo = decision.get("swing_lo", 0)
         return (
             decision.get("symbol", ""),
             decision.get("strategy", ""),
             decision.get("type", ""),
-            round(decision.get("sl", 0), 5),
-            entry_bucket,
-        )
+            round(swing_hi, 3),
+            round(swing_lo, 3),
+       )
 
     def is_duplicate(self, decision: dict, state: dict) -> bool:
         with self._lock:

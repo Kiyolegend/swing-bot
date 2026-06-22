@@ -204,4 +204,6 @@ def check(state: dict, debug: bool = False) -> dict | None:
         "sl":         sl,
         "tp":         tp,
         "rr":         rr,
+        "swing_hi":   swing_hi,
+        "swing_lo":   swing_lo,
     }

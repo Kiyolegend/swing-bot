@@ -133,6 +133,24 @@ def check(state: dict, debug: bool = False) -> dict | None:
     level_tf    = best_level.get("timeframe", "4h")
     stacked     = len(matching_levels) >= 2
 
+    
+    # ── Step 2b: Verify price is extended enough from the golden zone ──────────
+    _d1 = state.get("d1") or {}
+    _zone_top, _zone_bottom = _fib_zone(_d1.get("swing_hi"), _d1.get("swing_lo"))
+    SW2_MIN_EXTENSION_PIPS = 30
+    if correction == "bearish" and _zone_top:
+        _dist = (price - _zone_top) / pip
+        if _dist < SW2_MIN_EXTENSION_PIPS:
+            if debug:
+                print(f"  [SW2] {symbol}: only {_dist:.1f}p above golden zone — not extended, skip")
+            return None
+    elif correction == "bullish" and _zone_bottom:
+        _dist = (_zone_bottom - price) / pip
+        if _dist < SW2_MIN_EXTENSION_PIPS:
+            if debug:
+                print(f"  [SW2] {symbol}: only {_dist:.1f}p below golden zone — not extended, skip")
+            return None
+
     if debug:
         print(f"  [SW2] {symbol}: {len(matching_levels)} {target_kind} levels, best={level_tf} @ {level_price:.5f}")
 
@@ -259,4 +277,6 @@ def check(state: dict, debug: bool = False) -> dict | None:
         "sl":         sl,
         "tp":         tp,
         "rr":         rr,
+        "swing_hi":   swing_hi,
+        "swing_lo":   swing_lo,
     }

@@ -44,7 +44,7 @@ MT5_SYMBOL = get_symbol_cfg()["mt5_name"]
 # to keep risk within 2% of account balance.
 # At 0.01 lot on USD/JPY: 1 pip = ~$0.065 → 50-pip SL = ~$3.25 (2.4% of $135)
 # Adjust DEFAULT_LOT and ACCOUNT_BALANCE to match your real account.
-ACCOUNT_BALANCE  = 135.0
+ACCOUNT_BALANCE  = 145.0
 DEFAULT_LOT      = 0.01
 MAX_LOT          = 0.05
 MAX_RISK_PERCENT = 0.02   # 2% per trade (swing SLs are wide — keep risk tight)

@@ -151,6 +151,13 @@ def check(state: dict, debug: bool = False) -> dict | None:
     has_1h_choch = _recent_signal(choch_1h, direction, max_bars=5)
     has_1h_bos   = _recent_signal(bos_1h,   direction, max_bars=5)
 
+    # Fresh zone entry = require CHoCH not just BOS (tighter filter)
+    zone_visited = state.get("d1", {}).get("zone_visited", False)
+    if not zone_visited and not has_4h_choch:
+        if debug:
+            print(f"  [SW1] {symbol}: fresh zone entry — 4H CHoCH required, BOS alone not accepted — skip")
+        return None
+
     if not (has_4h_choch or has_4h_bos):
         if debug:
             print(f"  [SW1] {symbol}: No 4H {direction} CHoCH/BOS — skip")
@@ -257,4 +264,6 @@ def check(state: dict, debug: bool = False) -> dict | None:
         "sl":         sl,
         "tp":         tp,
         "rr":         rr,
+        "swing_hi":   swing_hi,
+        "swing_lo":   swing_lo,
     }
