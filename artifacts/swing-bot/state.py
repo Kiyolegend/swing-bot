@@ -192,6 +192,9 @@ def build_state(symbol: str = None) -> dict | None:
         f"bias=D1:{effective_d1}/4H:{bias_4h}/1H:{bias_1h}]"
     )
 
+    _d1_hi = (a_d1 or {}).get("trend", {}).get("last_high_price")
+    _d1_lo = (a_d1 or {}).get("trend", {}).get("last_low_price")
+
     return sanitize_state({
         "symbol":            sym,
         "current_price":     current_price,
@@ -228,8 +231,8 @@ def build_state(symbol: str = None) -> dict | None:
             "choch":     (a_d1 or {}).get("choch", []),
             "zones":     (a_d1 or {}).get("zones", []),
             "candles":   (a_d1 or {}).get("candles", []),
-            "swing_hi":  (a_d1 or {}).get("trend", {}).get("last_high_price") or a4h.get("trend", {}).get("last_high_price"),
-            "swing_lo":  (a_d1 or {}).get("trend", {}).get("last_low_price")  or a4h.get("trend", {}).get("last_low_price"),
+            "swing_hi":  _d1_hi if (_d1_hi and _d1_lo) else a4h.get("trend", {}).get("last_high_price"),
+            "swing_lo":  _d1_lo if (_d1_hi and _d1_lo) else a4h.get("trend", {}).get("last_low_price"),
             "zone_visited": _check_zone_visited( 
                 sym      = sym,
                 price    = current_price,
