@@ -100,8 +100,10 @@ def get_broker_ts(state: dict) -> int:
 def fib_extension_tp(state: dict, direction: str, entry: float) -> float | None:
     """127.2% Fibonacci extension TP using D1 swing. Returns None if swing data missing."""
     try:
-        hi = (state.get("d1") or {}).get("swing_hi") or (state.get("4h") or {}).get("swing_hi")
-        lo = (state.get("d1") or {}).get("swing_lo") or (state.get("4h") or {}).get("swing_lo")
+        d1 = state.get("d1") or {}
+        h4 = state.get("4h") or {}
+        hi = d1.get("swing_hi") if (d1.get("swing_hi") and d1.get("swing_lo")) else h4.get("swing_hi")
+        lo = d1.get("swing_lo") if (d1.get("swing_hi") and d1.get("swing_lo")) else h4.get("swing_lo")
         if not hi or not lo or hi <= lo:
             return None
         rng = hi - lo
