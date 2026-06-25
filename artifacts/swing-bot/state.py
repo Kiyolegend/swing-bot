@@ -236,8 +236,8 @@ def build_state(symbol: str = None) -> dict | None:
             "zone_visited": _check_zone_visited( 
                 sym      = sym,
                 price    = current_price,
-                swing_hi = (a_d1 or {}).get("trend", {}).get("last_high_price") or a4h.get("trend", {}).get("last_high_price"),
-                swing_lo = (a_d1 or {}).get("trend", {}).get("last_low_price")  or a4h.get("trend", {}).get("last_low_price"),
+                swing_hi = _d1_hi if (_d1_hi and _d1_lo) else a4h.get("trend", {}).get("last_high_price"),
+                swing_lo = _d1_lo if (_d1_hi and _d1_lo) else a4h.get("trend", {}).get("last_low_price"),
                 pip      = config.get_symbol_cfg(sym)["pip_size"],
             ),
         },
